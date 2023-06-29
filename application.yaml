@@ -4,8 +4,8 @@ server:
 
 spring:
   datasource:
-    username: root
-    password: admin123
+    username: yourUserName
+    password: yourPassword
     url: jdbc:mysql://localhost:3306/search_engine?useSSL=false&requireSSL=false&allowPublicKeyRetrieval=true
   jpa:
     properties:
@@ -17,9 +17,9 @@ spring:
 
 indexing-settings:
   sites:
-    - url: https://skillbox.ru
-      name: Skillbox
+    - url: https://www.dombulgakova.ru/
+      name: Дом_Булгакова.ru
     - url: https://www.lenta.ru
       name: Лента.ру
-#    - url: https://www.playback.ru
-#      name: PlayBack.Ru
+    - url: https://www.playback.ru
+      name: PlayBack.Ru

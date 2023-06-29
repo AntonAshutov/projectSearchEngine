@@ -49,11 +49,17 @@ public class SearchingServiceImpl implements SearchingSevice {
 
         List<String> lemmasFromQuery = getLemmas(query);
         List<Integer> idsOfSitesToSearchIn = getSitesIds(site);
+        if ( idsOfSitesToSearchIn.size() == 0){
+            return  emptyResponse();
+        }
         List<String> sortedAndFilteredLemmas = sortAndFilter(lemmasFromQuery, idsOfSitesToSearchIn);
         if (sortedAndFilteredLemmas.size() == 0) {
             return errorResponse();
         }
         List<Integer> filteredPageIds = getRelevantPagesIds(sortedAndFilteredLemmas, idsOfSitesToSearchIn);
+        if ( filteredPageIds.size() == 0){
+            return  emptyResponse();
+        }
         Map<Integer, Integer> pageToRank = getPagesRanks(filteredPageIds, sortedAndFilteredLemmas);
         Integer count = filteredPageIds.size();
         List<Integer> sortedAndFilteredPages = getSortedAndLimitedPages(pageToRank, limit);
@@ -76,7 +82,13 @@ public class SearchingServiceImpl implements SearchingSevice {
         response.setData(pageDataList);
         return response;
     }
-
+    private SearchResponse emptyResponse(){
+        SearchResponse response = new SearchResponse();
+        response.setData(new ArrayList<>());
+        response.setResult(true);
+        response.setCount(0);
+        return response;
+    }
     private SearchResponse errorResponse() {
         SearchResponse response = new SearchResponse();
         response.setError("Задан пустой поисковый запрос");
@@ -321,7 +333,7 @@ public class SearchingServiceImpl implements SearchingSevice {
             return result;
         }
 
-        return null;
+        return new ArrayList<>();
 
     }
 
