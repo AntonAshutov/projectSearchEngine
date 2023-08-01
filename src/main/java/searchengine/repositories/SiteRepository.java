@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import searchengine.model.Site;
+import searchengine.model.SiteM;
 
 import java.util.Date;
 import java.util.List;
@@ -13,20 +13,20 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-public interface SiteRepository extends JpaRepository<Site, Integer> {
-    Optional<Site> findByUrl(String url);
+public interface SiteRepository extends JpaRepository<SiteM, Integer> {
+    Optional<SiteM> findByUrl(String url);
     void deleteByUrlIn(List<String> urls);
 
 
     @Modifying
-    @Query("UPDATE Site s SET s.statusTime = :statusTime WHERE s.id = :id")
+    @Query("UPDATE SiteM s SET s.statusTime = :statusTime WHERE s.id = :id")
     void updateStatusTimeById(@Param("id") Integer id, @Param("statusTime") Date statusTime);
 
     @Modifying
-    @Query("UPDATE Site s SET s.status = :status WHERE s.id = :id")
-    void updateStatusById(@Param("id") Integer id, @Param("status") Site.SiteStatus status);
+    @Query("UPDATE SiteM s SET s.status = :status WHERE s.id = :id")
+    void updateStatusById(@Param("id") Integer id, @Param("status") SiteM.SiteStatus status);
 
     @Modifying
-    @Query("UPDATE Site s SET s.lastError = :error WHERE s.id = :id")
+    @Query("UPDATE SiteM s SET s.lastError = :error WHERE s.id = :id")
     void updateErrorById(@Param("id") Integer id, @Param("error") String error);
 }

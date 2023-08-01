@@ -16,7 +16,7 @@ public class Lemma {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "site_id", referencedColumnName = "id")
-    private Site site;
+    private SiteM site;
 
     @Column(nullable = false, columnDefinition = "VARCHAR(255)")
     private String lemma;

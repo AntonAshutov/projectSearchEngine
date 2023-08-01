@@ -12,7 +12,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import searchengine.model.Page;
-import searchengine.model.Site;
+import searchengine.model.SiteM;
 import searchengine.repositories.PageRepository;
 import searchengine.repositories.SiteRepository;
 
@@ -24,7 +24,7 @@ public class SiteScanner {
 
     private SiteRepository siteRepository;
     private PageRepository pageRepository;
-    private Site site;
+    private SiteM site;
     private LemmasAndIndexesOrganizer lemmasAndIndexesOrganizer;
     private URL startUrl;
 
@@ -36,10 +36,10 @@ public class SiteScanner {
     ExecutorService executor;
     int linkCountOnCurrentDepth;
 
-    public SiteScanner(SiteRepository siteRepository, PageRepository pageRepository, Site site, LemmasAndIndexesOrganizer lemmasAndIndexesOrganizer) throws MalformedURLException {
+    public SiteScanner(SiteRepository siteRepository, PageRepository pageRepository, SiteM site, LemmasAndIndexesOrganizer lemmasAndIndexesOrganizer) throws MalformedURLException {
         this.lemmasAndIndexesOrganizer = lemmasAndIndexesOrganizer;
         siteRepository.updateErrorById(site.getId(), "");
-        siteRepository.updateStatusById(site.getId(), Site.SiteStatus.INDEXING);
+        siteRepository.updateStatusById(site.getId(), SiteM.SiteStatus.INDEXING);
         siteRepository.updateStatusTimeById(site.getId(), new Date(System.currentTimeMillis()));
         siteAccessController = new SiteAccessController(site, pageRepository);
         this.siteRepository = siteRepository;
@@ -64,7 +64,7 @@ public class SiteScanner {
                 }
             }
             if(scanningIsStopped){
-                siteRepository.updateStatusById(site.getId(), Site.SiteStatus.FAILED);
+                siteRepository.updateStatusById(site.getId(), SiteM.SiteStatus.FAILED);
                 siteRepository.updateErrorById(site.getId(), "индексация прервана пользователем");
                 break;
             }
@@ -78,7 +78,7 @@ public class SiteScanner {
         }
         executor.shutdown();
         if(scanningIsStopped){return;}
-        siteRepository.updateStatusById(site.getId(), Site.SiteStatus.INDEXED);
+        siteRepository.updateStatusById(site.getId(), SiteM.SiteStatus.INDEXED);
     }
 
 

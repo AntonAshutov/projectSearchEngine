@@ -1,6 +1,5 @@
 package searchengine.services;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import searchengine.config.SitesList;
@@ -8,27 +7,37 @@ import searchengine.dto.statistics.DetailedStatisticsItem;
 import searchengine.dto.statistics.StatisticsData;
 import searchengine.dto.statistics.StatisticsResponse;
 import searchengine.dto.statistics.TotalStatistics;
-import searchengine.model.Site;
+import searchengine.model.SiteM;
 import searchengine.repositories.LemmaRepository;
 import searchengine.repositories.PageRepository;
 import searchengine.repositories.SiteRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
-@RequiredArgsConstructor
 @Service
 public class StatisticsServiceImpl implements StatisticsService {
 
-    @Autowired
     private SitesList sites;
-    @Autowired
     IndexingService indexingService;
-    @Autowired
     private SiteRepository siteRepository;
-    @Autowired
     private LemmaRepository lemmaRepository;
-    @Autowired
     private PageRepository pageRepository;
+
+    public StatisticsServiceImpl() {
+    }
+
+    @Autowired
+    public StatisticsServiceImpl(SitesList sites, IndexingService indexingService, SiteRepository siteRepository, LemmaRepository lemmaRepository, PageRepository pageRepository) {
+        this.sites = sites;
+        this.indexingService = indexingService;
+        this.siteRepository = siteRepository;
+        this.lemmaRepository = lemmaRepository;
+        this.pageRepository = pageRepository;
+    }
+
     private HashMap<searchengine.config.Site, Integer> pageCount = new HashMap<>();
     private HashMap<searchengine.config.Site, Long> statusTime = new HashMap<>();
     private HashMap<searchengine.config.Site, String> statuses = new HashMap<>();
@@ -37,19 +46,19 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     private void setSiteStats() {
         for (searchengine.config.Site site : sites.getSites()) {
-            Optional<Site> siteMOptional = siteRepository.findByUrl(site.getUrl());
+            Optional<SiteM> siteMOptional = siteRepository.findByUrl(site.getUrl());
             if (siteMOptional.isEmpty()) {
                 pageCount.put(site, 0);
                 statusTime.put(site, 0L);
                 statuses.put(site, "FAILED");
                 errors.put(site, "запись не найдена");
-                lemmas.put(site,0);
+                lemmas.put(site, 0);
                 continue;
             }
-            Site siteM = siteMOptional.get();
+            SiteM siteM = siteMOptional.get();
             Integer siteId = siteM.getId();
 
-            lemmas.put(site,lemmaRepository.countLemmasBySiteId(siteId));
+            lemmas.put(site, lemmaRepository.countLemmasBySiteId(siteId));
             pageCount.put(site, pageRepository.countPagesBySiteId(siteId));
             statuses.put(site, siteM.getStatus().toString());
             statusTime.put(site, siteM.getStatusTime().getTime());
@@ -105,15 +114,15 @@ public class StatisticsServiceImpl implements StatisticsService {
     private void checkIfIndexingWasInterrupted() {
 
         for (searchengine.config.Site site : sites.getSites()) {
-            Optional<Site> siteMOptional = siteRepository.findByUrl(site.getUrl());
+            Optional<SiteM> siteMOptional = siteRepository.findByUrl(site.getUrl());
             if (siteMOptional.isEmpty()) {
                 continue;
             }
 
-            Site siteToCheck = siteMOptional.get();
+            SiteM siteToCheck = siteMOptional.get();
 
-            if (siteToCheck.getStatus().equals(Site.SiteStatus.INDEXING) & !indexingService.getIndexingStatus()) {
-                siteToCheck.setStatus(Site.SiteStatus.FAILED);
+            if (siteToCheck.getStatus().equals(SiteM.SiteStatus.INDEXING) & !indexingService.getIndexingStatus()) {
+                siteToCheck.setStatus(SiteM.SiteStatus.FAILED);
                 siteToCheck.setLastError("Индексация завершена некорректно");
             }
         }

@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import searchengine.model.Index;
 import searchengine.model.Lemma;
 import searchengine.model.Page;
-import searchengine.model.Site;
+import searchengine.model.SiteM;
 import searchengine.repositories.IndexRepository;
 import searchengine.repositories.LemmaRepository;
 import searchengine.repositories.PageRepository;
@@ -36,7 +36,7 @@ public class LemmasAndIndexesOrganizer {
     public void handlePageContent(Page page, String pageContent){
         HashMap <String,Integer> lemmasFromPage = lemmaFinder.collectLemmasFromPageContent(pageContent);
         List<String> lemmas = lemmasFromPage.keySet().stream().toList();
-        Site site = page.getSite();
+        SiteM site = page.getSite();
 
         List<Lemma> lemmaMS = updateLemmasAdd(lemmas, site);
 
@@ -44,7 +44,7 @@ public class LemmasAndIndexesOrganizer {
 
     }
 
-    private List<Lemma> updateLemmasAdd(List<String> lemmas, Site site) {
+    private List<Lemma> updateLemmasAdd(List<String> lemmas, SiteM site) {
         ArrayList<Lemma> lemmaMS= new ArrayList<>();
         for (String lemma : lemmas) {
             Lemma existingLemma = lemmaRepository.findFirstByLemmaAndSiteId(lemma, site.getId());
@@ -91,7 +91,7 @@ public class LemmasAndIndexesOrganizer {
 
     }
 
-    public void clearIndexesAndLemmasBySite(Site site){
+    public void clearIndexesAndLemmasBySite(SiteM site){
         List<Integer> pageIds = pageRepository.findIdsBySiteId(site.getId());
         indexRepository.deleteAllByPageIdIn(pageIds);
         lemmaRepository.deleteAllBySiteId(site.getId());

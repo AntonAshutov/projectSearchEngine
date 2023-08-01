@@ -10,7 +10,7 @@ import searchengine.config.SitesList;
 import searchengine.dto.statistics.PageData;
 import searchengine.dto.statistics.SearchResponse;
 import searchengine.model.Page;
-import searchengine.model.Site;
+import searchengine.model.SiteM;
 import searchengine.repositories.IndexRepository;
 import searchengine.repositories.LemmaRepository;
 import searchengine.repositories.PageRepository;
@@ -185,7 +185,7 @@ public class SearchingServiceImpl implements SearchingSevice {
 
     }
 
-    public String formResultSnippet(List<String> strings) {
+    private String formResultSnippet(List<String> strings) {
         String result = String.join(" ... ", strings);
         String[] words = result.split(" ");
         StringBuilder sb = new StringBuilder();
@@ -326,7 +326,7 @@ public class SearchingServiceImpl implements SearchingSevice {
             return getAllSites();
         }
 
-        Optional<Site> siteM = siteRepository.findByUrl(siteFromQuery);
+        Optional<SiteM> siteM = siteRepository.findByUrl(siteFromQuery);
         ArrayList<Integer> result = new ArrayList<>();
         if (siteM.isPresent()) {
             result.add(siteM.get().getId());
@@ -340,7 +340,7 @@ public class SearchingServiceImpl implements SearchingSevice {
     private List<Integer> getAllSites() {
         List<Integer> ids = new ArrayList<>();
         for (searchengine.config.Site site : sites.getSites()) {
-            Optional<Site> siteM = siteRepository.findByUrl(site.getUrl());
+            Optional<SiteM> siteM = siteRepository.findByUrl(site.getUrl());
             if (siteM.isEmpty()) {
                 continue;
             }

@@ -1,5 +1,5 @@
 package searchengine.scanner;
-import searchengine.model.Site;
+import searchengine.model.SiteM;
 import searchengine.repositories.PageRepository;
 
 import java.io.IOException;
@@ -11,9 +11,9 @@ import java.util.concurrent.Semaphore;
 public class SiteAccessController {
     private final Semaphore semaphore;
     PageRepository pageRepository;
-    Site site;
+    SiteM site;
 
-    public SiteAccessController(Site site, PageRepository pageRepository) {
+    public SiteAccessController(SiteM site, PageRepository pageRepository) {
         this.semaphore = new Semaphore(1, true);
         this.site = site;
         this.pageRepository = pageRepository;

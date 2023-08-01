@@ -3,7 +3,7 @@ package searchengine.scanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import searchengine.model.Page;
-import searchengine.model.Site;
+import searchengine.model.SiteM;
 import searchengine.repositories.IndexRepository;
 import searchengine.repositories.LemmaRepository;
 import searchengine.repositories.PageRepository;
@@ -26,7 +26,7 @@ public class PageScanner {
     @Autowired
     private LemmasAndIndexesOrganizer lemmasAndIndexesOrganizer;
     String siteName;
-    Site site;
+    SiteM site;
     Page page;
     @Autowired
     PageRepository pageRepository;
@@ -43,7 +43,7 @@ public class PageScanner {
 
     private Boolean checkIfSiteExist(URL page) {
         URL siteURL;
-        for (Site site : siteRepository.findAll()) {
+        for (SiteM site : siteRepository.findAll()) {
             try {
                 siteURL = new URL(site.getUrl());
             } catch (MalformedURLException e) {
@@ -88,9 +88,9 @@ public class PageScanner {
     }
 
     private void createSite(String url) {
-        Site site = new Site();
+        SiteM site = new SiteM();
         site.setLastError("Индексация не проводилась");
-        site.setStatus(Site.SiteStatus.FAILED);
+        site.setStatus(SiteM.SiteStatus.FAILED);
         site.setUrl(url);
         site.setStatusTime(new Date(System.currentTimeMillis()));
         site.setName(siteName);
