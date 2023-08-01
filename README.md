@@ -10,6 +10,7 @@ educational project <br><br>
 - jsoup
 - multythreading
 - MySQL
+- JUnit
 ---
 
 Как запустить приложение локально:
